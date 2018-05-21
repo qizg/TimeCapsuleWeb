@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SendEmailSchedulerTask {
 
-    @Scheduled(fixedRate = 6000)
+//    @Scheduled(fixedRate = 6000)
     private void sendEmail(){
 
     }
