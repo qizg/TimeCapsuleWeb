@@ -1,6 +1,5 @@
 package com.sinwn.capsule;
 
-import com.sinwn.capsule.entity.AppTest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,12 +15,4 @@ public class CapsuleApplicationTests {
     public void contextLoads() {
     }
 
-    @Autowired
-    private AppTest blogProperties;
-
-    @Test
-    public void getHello() throws Exception {
-        Assert.assertEquals(blogProperties.getName(), "时光胶囊");
-        Assert.assertEquals(blogProperties.getTitle(), "时光胶囊");
-    }
 }
