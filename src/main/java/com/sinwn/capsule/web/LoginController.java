@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class LoginController {
 
-    @RequestMapping(value = "/book/hello",method = RequestMethod.GET)
+    @RequestMapping(value = "/hello",method = RequestMethod.GET)
     public String sayHello() {
         return "Hello，《Spring Boot 2.x 核心技术实战 - 上 基础篇》！";
     }
