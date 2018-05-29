@@ -1,12 +1,16 @@
 package com.sinwn.capsule.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.sinwn.capsule.constant.Constant;
+import com.sinwn.capsule.constant.StrConstant;
+import com.sinwn.capsule.domain.ResultData;
+import com.sinwn.capsule.domain.ResultListData;
 import com.sinwn.capsule.entity.UserEntity;
 import com.sinwn.capsule.mapper.UserEntityMapper;
 import com.sinwn.capsule.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -15,16 +19,34 @@ public class UserServiceImpl implements UserService {
     private UserEntityMapper userMapper;
 
     @Override
-    public List<UserEntity> getUserList(String filterName, int page, int pageCount) {
-        if (page <= 0) {
-            page = 1;
-        }
-        if (pageCount <= 0) {
-            pageCount = 10;
-        }
-        int start = (page - 1) * pageCount;
+    public ResultData<ResultListData<UserEntity>> getUserList(
+            String filterName, String strPageNo, String strPageCount) {
+        int pageNo = 1, pageCount = 10;
 
-        return userMapper.selectUsers(filterName, start, pageCount);
+        try {
+            if (strPageNo != null) {
+                pageNo = Integer.valueOf(strPageNo);
+                if (pageNo <= 0) {
+                    pageNo = 1;
+                }
+            }
+            if (strPageCount != null) {
+                pageCount = Integer.valueOf(strPageCount);
+                if (pageCount <= 0) {
+                    pageCount = 10;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        PageHelper.startPage(pageNo, pageCount);
+        Page<UserEntity> page = userMapper.selectUsers(filterName);
+
+        ResultData<ResultListData<UserEntity>> resultData
+                = new ResultData<>(Constant.STATUS_SUCCESS, StrConstant.SUCCESS);
+        resultData.setData(new ResultListData<>(page));
+
+        return resultData;
     }
 
     @Override

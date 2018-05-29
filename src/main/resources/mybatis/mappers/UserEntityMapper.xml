@@ -114,14 +114,11 @@
       create_time = #{createTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <select id="selectUsers" resultMap="BaseResultMap" >
+  <select id="selectUsers" resultMap="BaseResultMap" useCache="false">
 
       select
       <include refid="Base_Column_List" />
       from user
-
-
-      limit #{offset},#{rows}
 
   </select>
 </mapper>

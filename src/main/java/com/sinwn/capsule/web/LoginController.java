@@ -1,14 +1,19 @@
 package com.sinwn.capsule.web;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
 
 @RestController
 public class LoginController {
 
-    @RequestMapping(value = "/hello",method = RequestMethod.GET)
-    public String sayHello() {
+    @PostMapping("/login")
+    public String login(@RequestHeader Map<String, Object> header,
+                        @RequestBody Map<String, Object> body) {
+
         return "Hello，《Spring Boot 2.x 核心技术实战 - 上 基础篇》！";
     }
 

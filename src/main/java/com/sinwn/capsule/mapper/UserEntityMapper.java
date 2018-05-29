@@ -1,10 +1,9 @@
 package com.sinwn.capsule.mapper;
 
+import com.github.pagehelper.Page;
 import com.sinwn.capsule.entity.UserEntity;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface UserEntityMapper {
@@ -20,6 +19,5 @@ public interface UserEntityMapper {
 
     int updateByPrimaryKey(UserEntity record);
 
-    List<UserEntity> selectUsers(@Param("filterName") String filterName,
-                                 @Param("offset") int offset, @Param("rows") int rows);
+    Page<UserEntity> selectUsers(@Param("filterName") String filterName);
 }

@@ -1,12 +1,12 @@
 package com.sinwn.capsule.service;
 
+import com.sinwn.capsule.domain.ResultData;
+import com.sinwn.capsule.domain.ResultListData;
 import com.sinwn.capsule.entity.UserEntity;
-
-import java.util.List;
 
 public interface UserService {
 
-    List<UserEntity> getUserList(String filterName, int page, int pageCount);
+    ResultData<ResultListData<UserEntity>> getUserList(String filterName, String pageNo, String pageCount);
 
     int insertUser(UserEntity userEntity);
 

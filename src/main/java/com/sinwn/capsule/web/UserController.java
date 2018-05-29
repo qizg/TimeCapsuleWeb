@@ -1,14 +1,15 @@
 package com.sinwn.capsule.web;
 
+import com.sinwn.capsule.domain.ResultData;
+import com.sinwn.capsule.domain.ResultListData;
 import com.sinwn.capsule.entity.UserEntity;
 import com.sinwn.capsule.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping(value = "/users")
@@ -17,14 +18,14 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping(method = RequestMethod.GET)
-    public List<UserEntity> getUserList() {
+    @GetMapping
+    public ResultData<ResultListData<UserEntity>> getUserList(HttpServletRequest request) {
 
-        List<UserEntity> u = new ArrayList<>();
-System.out.print("===================================");
-        return userService.getUserList("", 0, 10);
+        String filterName = request.getParameter("filterName");
+        String pageNo = request.getParameter("pageNo");
+        String pageCount = request.getParameter("pageCount");
 
-//        return u;
+        return userService.getUserList(filterName, pageNo, pageCount);
     }
 
 }
