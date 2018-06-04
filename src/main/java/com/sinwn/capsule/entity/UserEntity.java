@@ -12,9 +12,11 @@ public class UserEntity implements Serializable {
 
     private String password;
 
+    private String token;
+
     private String nickName;
 
-    private String token;
+    private Integer state;
 
     private Date createTime;
 
@@ -52,6 +54,14 @@ public class UserEntity implements Serializable {
         this.password = password == null ? null : password.trim();
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token == null ? null : token.trim();
+    }
+
     public String getNickName() {
         return nickName;
     }
@@ -60,12 +70,12 @@ public class UserEntity implements Serializable {
         this.nickName = nickName == null ? null : nickName.trim();
     }
 
-    public String getToken() {
-        return token;
+    public Integer getState() {
+        return state;
     }
 
-    public void setToken(String token) {
-        this.token = token == null ? null : token.trim();
+    public void setState(Integer state) {
+        this.state = state;
     }
 
     public Date getCreateTime() {
