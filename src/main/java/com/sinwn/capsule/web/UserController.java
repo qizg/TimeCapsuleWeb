@@ -4,6 +4,7 @@ import com.sinwn.capsule.domain.ResultData;
 import com.sinwn.capsule.domain.ResultListData;
 import com.sinwn.capsule.entity.UserEntity;
 import com.sinwn.capsule.service.UserService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
+    @RequiresPermissions("userInfo:view")//权限管理;
     public ResultData<ResultListData<UserEntity>> getUserList(HttpServletRequest request) {
 
         String filterName = request.getParameter("filterName");
@@ -28,4 +30,15 @@ public class UserController {
         return userService.getUserList(filterName, pageNo, pageCount);
     }
 
+    @RequestMapping("/userAdd")
+    @RequiresPermissions("userInfo:add")//权限管理;
+    public String userInfoAdd(){
+        return "userInfoAdd";
+    }
+
+    @RequestMapping("/userDel")
+    @RequiresPermissions("userInfo:del")//权限管理;
+    public String userDel(){
+        return "userInfoDel";
+    }
 }

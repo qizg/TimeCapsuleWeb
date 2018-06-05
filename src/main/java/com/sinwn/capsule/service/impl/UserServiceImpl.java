@@ -64,4 +64,9 @@ public class UserServiceImpl implements UserService {
     public int deleteUser(long id) {
         return userMapper.deleteByPrimaryKey(id);
     }
+
+    @Override
+    public UserEntity findByUsername(String username) {
+        return userMapper.selectByUsername(username);
+    }
 }

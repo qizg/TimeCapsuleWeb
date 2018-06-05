@@ -13,4 +13,6 @@ public interface UserService {
     int updateUser(UserEntity userEntity);
 
     int deleteUser(long id);
+
+    UserEntity findByUsername(String username);
 }
