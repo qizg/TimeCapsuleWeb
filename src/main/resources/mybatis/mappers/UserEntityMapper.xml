@@ -4,7 +4,7 @@
     <resultMap id="BaseResultMap" type="com.sinwn.capsule.entity.UserEntity">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="email" jdbcType="VARCHAR" property="email"/>
-        <result column="phone" jdbcType="INTEGER" property="phone"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
         <result column="password" jdbcType="VARCHAR" property="password"/>
         <result column="token" jdbcType="VARCHAR" property="token"/>
         <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>

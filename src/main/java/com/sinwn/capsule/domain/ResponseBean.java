@@ -1,6 +1,6 @@
 package com.sinwn.capsule.domain;
 
-public class ResultData<T> {
+public class ResponseBean<T> {
 
     private int status;
 
@@ -8,10 +8,10 @@ public class ResultData<T> {
 
     private T data;
 
-    public ResultData() {
+    public ResponseBean() {
     }
 
-    public ResultData(int status, String message) {
+    public ResponseBean(int status, String message) {
         this.status = status;
         this.message = message;
     }

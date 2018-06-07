@@ -21,14 +21,18 @@ import java.io.UnsupportedEncodingException;
 public class MailServiceImpl implements MailService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
 
     @Value("${mail.address}")
     private String from;
 
     @Value("${mail.niceName}")
     private String niceName;
+
+    @Autowired
+    public MailServiceImpl(JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
 
     /**
      * 发送文本邮件

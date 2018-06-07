@@ -1,12 +1,12 @@
 package com.sinwn.capsule.service;
 
-import com.sinwn.capsule.domain.ResultData;
+import com.sinwn.capsule.domain.ResponseBean;
 import com.sinwn.capsule.domain.ResultListData;
 import com.sinwn.capsule.entity.UserEntity;
 
 public interface UserService {
 
-    ResultData<ResultListData<UserEntity>> getUserList(String filterName, String pageNo, String pageCount);
+    ResponseBean<ResultListData<UserEntity>> getUserList(String filterName, String pageNo, String pageCount);
 
     int insertUser(UserEntity userEntity);
 
@@ -15,4 +15,6 @@ public interface UserService {
     int deleteUser(long id);
 
     UserEntity findByUsername(String username);
+
+    UserEntity findByUserId(long userId);
 }

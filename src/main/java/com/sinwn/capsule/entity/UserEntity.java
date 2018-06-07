@@ -8,7 +8,7 @@ public class UserEntity implements Serializable {
 
     private String email;
 
-    private Integer phone;
+    private String phone;
 
     private String password;
 
@@ -38,11 +38,11 @@ public class UserEntity implements Serializable {
         this.email = email == null ? null : email.trim();
     }
 
-    public Integer getPhone() {
+    public String getPhone() {
         return phone;
     }
 
-    public void setPhone(Integer phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 

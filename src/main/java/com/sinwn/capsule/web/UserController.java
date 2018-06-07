@@ -1,6 +1,6 @@
 package com.sinwn.capsule.web;
 
-import com.sinwn.capsule.domain.ResultData;
+import com.sinwn.capsule.domain.ResponseBean;
 import com.sinwn.capsule.domain.ResultListData;
 import com.sinwn.capsule.entity.UserEntity;
 import com.sinwn.capsule.service.UserService;
@@ -21,7 +21,7 @@ public class UserController {
 
     @GetMapping
     @RequiresPermissions("userInfo:view")//权限管理;
-    public ResultData<ResultListData<UserEntity>> getUserList(HttpServletRequest request) {
+    public ResponseBean<ResultListData<UserEntity>> getUserList(HttpServletRequest request) {
 
         String filterName = request.getParameter("filterName");
         String pageNo = request.getParameter("pageNo");

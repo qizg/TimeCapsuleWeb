@@ -3,6 +3,7 @@ package com.sinwn.capsule.config;
 import com.sinwn.capsule.constant.StrConstant;
 import com.sinwn.capsule.entity.UserEntity;
 import com.sinwn.capsule.service.UserService;
+import com.sinwn.capsule.utils.JWTUtil;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -19,6 +20,14 @@ public class MyShiroRealm extends AuthorizingRealm {
 
     @Resource
     private UserService userInfoService;
+
+    /**
+     * 大坑！，必须重写此方法，不然Shiro会报错
+     */
+    @Override
+    public boolean supports(AuthenticationToken token) {
+        return token instanceof JWTToken;
+    }
 
     /* 授权 */
     @Override
@@ -39,24 +48,31 @@ public class MyShiroRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token)
             throws AuthenticationException {
-        System.out.println("MyShiroRealm.doGetAuthenticationInfo()");
-        //获取用户的输入的账号.
-        String username = (String) token.getPrincipal();
-        System.out.println(token.getCredentials());
-        //通过username从数据库中查找 User对象，如果找到，没找到.
-        //实际项目中，这里可以根据实际情况做缓存，如果不做，Shiro自己也是有时间间隔机制，2分钟内不会重复执行该方法
-        UserEntity userInfo = userInfoService.findByUsername(username);
-        System.out.println("----->>userInfo=" + userInfo);
-        if (userInfo == null) {
-            return null;
+
+        String jwtToken = (String) token.getCredentials();
+
+        Long userId = JWTUtil.getUserId(jwtToken);
+        if (userId == null) {
+            throw new AuthenticationException("token invalid");
         }
-        SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(
-                userInfo, //用户名
-                userInfo.getPassword(), //密码
-                ByteSource.Util.bytes(userInfo.getCreateTime().getTime() + StrConstant.PASSWORD_SALT),
+
+        UserEntity userBean = userInfoService.findByUserId(userId);
+        if (userBean == null) {
+            throw new AuthenticationException("User didn't existed!");
+        }
+
+        String secret = userBean.getCreateTime().getTime() + StrConstant.PASSWORD_SALT;
+
+        if (!JWTUtil.verify(jwtToken, userId, secret)) {
+            throw new AuthenticationException("Username or password error");
+        }
+
+        return new SimpleAuthenticationInfo(
+                userBean.getId(),
+                userBean.getPassword(),
+                ByteSource.Util.bytes(secret),
                 getName()  //realm name
         );
-        return authenticationInfo;
     }
 
 }
