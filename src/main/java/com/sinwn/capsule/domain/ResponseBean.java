@@ -16,6 +16,12 @@ public class ResponseBean<T> {
         this.message = message;
     }
 
+    public ResponseBean(int status, String message, T data) {
+        this.status = status;
+        this.message = message;
+        this.data = data;
+    }
+
     public int getStatus() {
         return status;
     }

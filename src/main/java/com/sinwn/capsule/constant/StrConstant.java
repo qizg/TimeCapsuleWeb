@@ -5,4 +5,7 @@ public class StrConstant {
 
     public static final String PASSWORD_SALT = "sinwn";
 
+    public static final String NO_USER = "用户不存在，请检查您的输入账号";
+
+    public static final String LOGIN_ERROR = "用户名或密码错误";
 }

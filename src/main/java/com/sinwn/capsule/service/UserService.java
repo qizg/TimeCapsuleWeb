@@ -2,6 +2,7 @@ package com.sinwn.capsule.service;
 
 import com.sinwn.capsule.domain.ResponseBean;
 import com.sinwn.capsule.domain.ResultListData;
+import com.sinwn.capsule.domain.response.LoginResponse;
 import com.sinwn.capsule.entity.UserEntity;
 
 public interface UserService {
@@ -14,7 +15,7 @@ public interface UserService {
 
     int deleteUser(long id);
 
-    UserEntity findByUsername(String username);
+    LoginResponse loginByUserName(String userName, String password);
 
     UserEntity findByUserId(long userId);
 }

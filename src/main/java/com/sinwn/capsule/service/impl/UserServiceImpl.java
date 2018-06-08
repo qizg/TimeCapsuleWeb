@@ -6,11 +6,16 @@ import com.sinwn.capsule.constant.Constant;
 import com.sinwn.capsule.constant.StrConstant;
 import com.sinwn.capsule.domain.ResponseBean;
 import com.sinwn.capsule.domain.ResultListData;
+import com.sinwn.capsule.domain.response.LoginResponse;
 import com.sinwn.capsule.entity.UserEntity;
 import com.sinwn.capsule.mapper.UserEntityMapper;
 import com.sinwn.capsule.service.UserService;
+import com.sinwn.capsule.utils.JWTUtil;
+import com.sinwn.capsule.utils.TransUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -70,7 +75,33 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity findByUsername(String username) {
-        return userMapper.selectByUsername(username);
+    public LoginResponse loginByUserName(String userName, String password) {
+
+        UserEntity entity = userMapper.selectByUsername(userName);
+
+        if (entity == null) {
+            return null;
+        } else {
+            String secret = entity.getCreateTime().getTime() + StrConstant.PASSWORD_SALT;
+            String handlePassword = TransUtil.encrypt(password, secret);
+            if (!entity.getPassword().equals(handlePassword)) {
+                return null;
+            }
+
+            LoginResponse response = new LoginResponse();
+            response.setUserId(entity.getId());
+            response.setEmail(entity.getEmail());
+            response.setPhone(entity.getPhone());
+            response.setNickName(entity.getNickName());
+            String superToken = JWTUtil.sign(entity.getId(), UUID.randomUUID().toString(), secret);
+            response.setSuperToken(superToken);
+            return response;
+        }
+
+    }
+
+    @Override
+    public UserEntity findByUserId(long userId) {
+        return userMapper.selectByUserId(userId);
     }
 }

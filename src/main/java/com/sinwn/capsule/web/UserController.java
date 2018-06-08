@@ -1,26 +1,45 @@
 package com.sinwn.capsule.web;
 
+import com.sinwn.capsule.constant.Constant;
+import com.sinwn.capsule.constant.StrConstant;
 import com.sinwn.capsule.domain.ResponseBean;
 import com.sinwn.capsule.domain.ResultListData;
+import com.sinwn.capsule.domain.response.LoginResponse;
 import com.sinwn.capsule.entity.UserEntity;
 import com.sinwn.capsule.service.UserService;
+import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @GetMapping
-    @RequiresPermissions("userInfo:view")//权限管理;
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @PostMapping("/login")
+    public ResponseBean<LoginResponse> login(@RequestHeader Map<String, Object> header,
+                                             @RequestBody Map<String, String> body) {
+
+        LoginResponse response = userService.loginByUserName(body.get("userName"), body.get("password"));
+
+        if (response == null) {
+            return new ResponseBean<>(Constant.STATUS_ERROR, StrConstant.LOGIN_ERROR);
+        } else {
+            return new ResponseBean<>(Constant.STATUS_SUCCESS, "Login success", response);
+        }
+    }
+
+    @GetMapping("/users")
+    @RequiresAuthentication
     public ResponseBean<ResultListData<UserEntity>> getUserList(HttpServletRequest request) {
 
         String filterName = request.getParameter("filterName");
@@ -32,13 +51,13 @@ public class UserController {
 
     @RequestMapping("/userAdd")
     @RequiresPermissions("userInfo:add")//权限管理;
-    public String userInfoAdd(){
+    public String userInfoAdd() {
         return "userInfoAdd";
     }
 
     @RequestMapping("/userDel")
     @RequiresPermissions("userInfo:del")//权限管理;
-    public String userDel(){
+    public String userDel() {
         return "userInfoDel";
     }
 }

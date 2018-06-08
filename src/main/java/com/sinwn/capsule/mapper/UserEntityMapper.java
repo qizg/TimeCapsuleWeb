@@ -21,4 +21,6 @@ public interface UserEntityMapper {
     Page<UserEntity> selectUsers(String filterName);
 
     UserEntity selectByUsername(String username);
+
+    UserEntity selectByUserId(long userId);
 }

@@ -142,4 +142,11 @@
         phone = #{username,jdbcType=VARCHAR}
 
     </select>
+
+    <select id="selectByUserId" resultMap="BaseResultMap" parameterType="Long">
+        select
+        <include refid="Base_Column_List"/>
+        from t_user
+        where id = #{userId, jdbcType=BIGINT}
+    </select>
 </mapper>
