@@ -65,13 +65,12 @@ public class MyShiroRealm extends AuthorizingRealm {
         String secret = userBean.getCreateTime().getTime() + StrConstant.PASSWORD_SALT;
 
         if (!JWTUtil.verify(jwtToken, userId, secret)) {
-            throw new AuthenticationException("Username or password error");
+            throw new AuthenticationException("Token error");
         }
 
         return new SimpleAuthenticationInfo(
-                userBean.getId(),
-                userBean.getPassword(),
-                ByteSource.Util.bytes(secret),
+                jwtToken,
+                jwtToken,
                 getName()  //realm name
         );
     }

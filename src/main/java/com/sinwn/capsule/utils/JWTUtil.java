@@ -24,7 +24,7 @@ public class JWTUtil {
             JWTVerifier verifier = JWT.require(algorithm)
                     .withClaim(USER_ID, userId)
                     .build();
-            DecodedJWT jwt = verifier.verify(token);
+            DecodedJWT jwt = verifier.verify(extractToken(token));
             return true;
         } catch (Exception exception) {
             return false;
@@ -36,7 +36,7 @@ public class JWTUtil {
      */
     public static Long getUserId(String token) {
         try {
-            DecodedJWT jwt = JWT.decode(token);
+            DecodedJWT jwt = JWT.decode(extractToken(token));
             return jwt.getClaim(USER_ID).asLong();
         } catch (JWTDecodeException e) {
             return null;
@@ -62,5 +62,16 @@ public class JWTUtil {
         } catch (UnsupportedEncodingException e) {
             return null;
         }
+    }
+
+    private static String extractToken(String token) {
+        if (token == null || token.length() <= 0) {
+            return token;
+        }
+        String HEADER_PREFIX = "Bearer ";
+        if (token.length() < HEADER_PREFIX.length()) {
+            return null;
+        }
+        return token.substring(HEADER_PREFIX.length(), token.length());
     }
 }

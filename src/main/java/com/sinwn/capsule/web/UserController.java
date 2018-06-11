@@ -50,7 +50,7 @@ public class UserController {
     }
 
     @RequestMapping("/userAdd")
-    @RequiresPermissions("userInfo:add")//权限管理;
+    @RequiresPermissions("view")//权限管理;
     public String userInfoAdd() {
         return "userInfoAdd";
     }
