@@ -7,9 +7,9 @@ public class LoginControllerTest {
 
     @Test
     public void testSayHello() {
-        String str = JWTUtil.sign(1L, "666", "888");
+        String str = JWTUtil.sign(1, "666", "888");
 
-        boolean f = JWTUtil.verify(str, 1L, "666");
+        boolean f = JWTUtil.verify(str, 1, "666");
 
         System.out.println(f);
 

@@ -1,16 +1,21 @@
 package com.sinwn.capsule.domain.request;
 
-public class LoginRequest {
-    private String name;
+import org.hibernate.validator.constraints.NotBlank;
 
+public class LoginRequest {
+
+    @NotBlank(message = "用户名不能为空")
+    private String userName;
+
+    @NotBlank(message = "密码不能为空")
     private String password;
 
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPassword() {

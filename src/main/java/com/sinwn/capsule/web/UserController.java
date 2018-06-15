@@ -4,6 +4,8 @@ import com.sinwn.capsule.constant.Constant;
 import com.sinwn.capsule.constant.StrConstant;
 import com.sinwn.capsule.domain.ResponseBean;
 import com.sinwn.capsule.domain.ResultListData;
+import com.sinwn.capsule.domain.request.LoginRequest;
+import com.sinwn.capsule.domain.request.SignUpRequest;
 import com.sinwn.capsule.domain.response.LoginResponse;
 import com.sinwn.capsule.entity.UserEntity;
 import com.sinwn.capsule.service.UserService;
@@ -13,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
+import javax.validation.Valid;
 
 @RestController
 public class UserController {
@@ -26,16 +28,20 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseBean<LoginResponse> login(@RequestHeader Map<String, Object> header,
-                                             @RequestBody Map<String, String> body) {
+    public ResponseBean<LoginResponse> login(@RequestBody @Valid LoginRequest body) {
 
-        LoginResponse response = userService.loginByUserName(body.get("userName"), body.get("password"));
+        LoginResponse response = userService.loginByUserName(body.getUserName(), body.getPassword());
 
         if (response == null) {
-            return new ResponseBean<>(Constant.STATUS_ERROR, StrConstant.LOGIN_ERROR);
+            return new ResponseBean<>(Constant.REQUEST_ERROR, StrConstant.LOGIN_ERROR);
         } else {
             return new ResponseBean<>(Constant.STATUS_SUCCESS, "Login success", response);
         }
+    }
+
+    @PostMapping("/signUp")
+    public ResponseBean signUp(@RequestBody @Valid SignUpRequest request) {
+        return userService.insertUser(request);
     }
 
     @GetMapping("/users")

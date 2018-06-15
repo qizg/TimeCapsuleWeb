@@ -18,7 +18,7 @@ public class JWTUtil {
     /**
      * 校验token是否正确
      */
-    public static boolean verify(String token, Long userId, String secret) {
+    public static boolean verify(String token, Integer userId, String secret) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             JWTVerifier verifier = JWT.require(algorithm)
@@ -34,10 +34,10 @@ public class JWTUtil {
     /**
      * 获得token中的信息无需secret解密也能获得
      */
-    public static Long getUserId(String token) {
+    public static Integer getUserId(String token) {
         try {
             DecodedJWT jwt = JWT.decode(extractToken(token));
-            return jwt.getClaim(USER_ID).asLong();
+            return jwt.getClaim(USER_ID).asInt();
         } catch (JWTDecodeException e) {
             return null;
         }
@@ -46,7 +46,7 @@ public class JWTUtil {
     /**
      * 生成签名
      */
-    public static String sign(Long userId, String JWTId, String secret) {
+    public static String sign(Integer userId, String JWTId, String secret) {
         try {
             long nowTime = System.currentTimeMillis();
 

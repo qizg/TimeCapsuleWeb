@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sinwn.capsule.mapper.UserEntityMapper">
     <resultMap id="BaseResultMap" type="com.sinwn.capsule.entity.UserEntity">
-        <id column="id" jdbcType="BIGINT" property="id"/>
+        <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="email" jdbcType="VARCHAR" property="email"/>
         <result column="phone" jdbcType="VARCHAR" property="phone"/>
         <result column="password" jdbcType="VARCHAR" property="password"/>
@@ -14,21 +14,21 @@
     <sql id="Base_Column_List">
         id, email, phone, password, token, nick_name, state, create_time
     </sql>
-    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from t_user
-        where id = #{id,jdbcType=BIGINT}
+        where id = #{id,jdbcType=INTEGER}
     </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete from t_user
-        where id = #{id,jdbcType=BIGINT}
+        where id = #{id,jdbcType=INTEGER}
     </delete>
-    <insert id="insert" parameterType="com.sinwn.capsule.entity.UserEntity">
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="com.sinwn.capsule.entity.UserEntity">
         insert into t_user (id, email, phone,
                             password, token, nick_name,
                             state, create_time)
-        values (#{id,jdbcType=BIGINT}, #{email,jdbcType=VARCHAR}, #{phone,jdbcType=INTEGER},
+        values (#{id,jdbcType=INTEGER}, #{email,jdbcType=VARCHAR}, #{phone,jdbcType=INTEGER},
                 #{password,jdbcType=VARCHAR}, #{token,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR},
                 #{state,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
     </insert>
@@ -62,7 +62,7 @@
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
-                #{id,jdbcType=BIGINT},
+                #{id,jdbcType=INTEGER},
             </if>
             <if test="email != null">
                 #{email,jdbcType=VARCHAR},
@@ -112,7 +112,7 @@
                 create_time = #{createTime,jdbcType=TIMESTAMP},
             </if>
         </set>
-        where id = #{id,jdbcType=BIGINT}
+        where id = #{id,jdbcType=INTEGER}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.sinwn.capsule.entity.UserEntity">
         update t_user
@@ -123,7 +123,7 @@
             nick_name   = #{nickName,jdbcType=VARCHAR},
             state       = #{state,jdbcType=INTEGER},
             create_time = #{createTime,jdbcType=TIMESTAMP}
-        where id = #{id,jdbcType=BIGINT}
+        where id = #{id,jdbcType=INTEGER}
     </update>
     <select id="selectUsers" resultMap="BaseResultMap" useCache="false">
 
@@ -143,10 +143,10 @@
 
     </select>
 
-    <select id="selectByUserId" resultMap="BaseResultMap" parameterType="Long">
+    <select id="selectByUserId" resultMap="BaseResultMap" parameterType="Integer">
         select
         <include refid="Base_Column_List"/>
         from t_user
-        where id = #{userId, jdbcType=BIGINT}
+        where id = #{userId, jdbcType=INTEGER}
     </select>
 </mapper>

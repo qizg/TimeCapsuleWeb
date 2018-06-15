@@ -6,15 +6,18 @@ import com.sinwn.capsule.constant.Constant;
 import com.sinwn.capsule.constant.StrConstant;
 import com.sinwn.capsule.domain.ResponseBean;
 import com.sinwn.capsule.domain.ResultListData;
+import com.sinwn.capsule.domain.request.SignUpRequest;
 import com.sinwn.capsule.domain.response.LoginResponse;
 import com.sinwn.capsule.entity.UserEntity;
 import com.sinwn.capsule.mapper.UserEntityMapper;
+import com.sinwn.capsule.service.PermissionService;
 import com.sinwn.capsule.service.UserService;
 import com.sinwn.capsule.utils.JWTUtil;
 import com.sinwn.capsule.utils.TransUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Service
@@ -22,9 +25,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserEntityMapper userMapper;
 
+    private final PermissionService permissionService;
+
     @Autowired
-    public UserServiceImpl(UserEntityMapper userMapper) {
+    public UserServiceImpl(UserEntityMapper userMapper, PermissionService permissionService) {
         this.userMapper = userMapper;
+        this.permissionService = permissionService;
     }
 
     @Override
@@ -59,9 +65,48 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int insertUser(UserEntity userEntity) {
+    public ResponseBean insertUser(SignUpRequest request) {
 
-        return userMapper.insert(userEntity);
+        String phone = request.getPhone();
+        String email = request.getEmail();
+        String password = request.getPassword();
+
+        String userName;
+        if (phone != null && phone.trim().length() > 0) {
+            userName = phone;
+        } else if (email != null && email.trim().length() > 0) {
+            userName = email;
+        } else {
+            return new ResponseBean(Constant.REQUEST_ERROR, StrConstant.REQ_ERROR);
+        }
+
+        UserEntity entity = userMapper.selectByUsername(userName);
+
+        if (entity != null) {
+            return new ResponseBean(Constant.REQUEST_ERROR, StrConstant.SING_UP_HAS_ERROR);
+        }
+
+        Date createDate = new Date();
+
+        String secret = createDate.getTime() + StrConstant.PASSWORD_SALT;
+        String handlePassword = TransUtil.encrypt(password, secret);
+
+        entity = new UserEntity();
+        entity.setPhone(phone);
+        entity.setEmail(email);
+        entity.setPassword(handlePassword);
+        entity.setCreateTime(createDate);
+        entity.setState(1);
+
+        int count = userMapper.insert(entity);
+        if (count > 0) {
+            int userId = entity.getId();
+            boolean roleFlag = permissionService.addUserRole(userId, 3);
+            if (roleFlag) {
+                return new ResponseBean(Constant.STATUS_SUCCESS, StrConstant.SUCCESS);
+            }
+        }
+        return new ResponseBean(Constant.STATUS_ERROR, StrConstant.SYSTEM_ERROR);
     }
 
     @Override
@@ -70,7 +115,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int deleteUser(long id) {
+    public int deleteUser(int id) {
         return userMapper.deleteByPrimaryKey(id);
     }
 
@@ -93,15 +138,14 @@ public class UserServiceImpl implements UserService {
             response.setEmail(entity.getEmail());
             response.setPhone(entity.getPhone());
             response.setNickName(entity.getNickName());
-            String superToken = JWTUtil.sign(entity.getId(), UUID.randomUUID().toString(), secret);
-            response.setSuperToken(superToken);
+            String accessToken = JWTUtil.sign(entity.getId(), UUID.randomUUID().toString(), secret);
+            response.setAccessToken(accessToken);
             return response;
         }
-
     }
 
     @Override
-    public UserEntity findByUserId(long userId) {
+    public UserEntity findByUserId(int userId) {
         return userMapper.selectByUserId(userId);
     }
 }

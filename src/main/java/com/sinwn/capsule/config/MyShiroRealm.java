@@ -35,7 +35,7 @@ public class MyShiroRealm extends AuthorizingRealm {
     /* 授权 */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        Long userId = JWTUtil.getUserId(principals.toString());
+        Integer userId = JWTUtil.getUserId(principals.toString());
         UserEntity user = userInfoService.findByUserId(userId);
 
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
@@ -52,7 +52,7 @@ public class MyShiroRealm extends AuthorizingRealm {
 
         String jwtToken = (String) token.getCredentials();
 
-        Long userId = JWTUtil.getUserId(jwtToken);
+        Integer userId = JWTUtil.getUserId(jwtToken);
         if (userId == null) {
             throw new AuthenticationException("token invalid");
         }

@@ -9,7 +9,7 @@ public class LoginResponse {
 
     private String nickName;
 
-    private String superToken;
+    private String accessToken;
 
     public long getUserId() {
         return userId;
@@ -43,11 +43,11 @@ public class LoginResponse {
         this.nickName = nickName;
     }
 
-    public String getSuperToken() {
-        return superToken;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public void setSuperToken(String superToken) {
-        this.superToken = superToken;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 }
