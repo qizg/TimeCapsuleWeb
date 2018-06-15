@@ -1,9 +1,12 @@
 package com.sinwn.capsule.web;
 
 import com.sinwn.capsule.constant.Constant;
+import com.sinwn.capsule.constant.StrConstant;
 import com.sinwn.capsule.domain.ResponseBean;
 import com.sinwn.capsule.exception.UnauthorizedException;
 import org.apache.shiro.ShiroException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -18,18 +21,22 @@ import java.util.List;
 @RestControllerAdvice
 public class ExceptionController {
 
+    private final Logger logger = LoggerFactory.getLogger(ExceptionController.class);
+
     // 捕捉shiro的异常
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(ShiroException.class)
     public ResponseBean handle401(ShiroException e) {
-        return new ResponseBean(Constant.UNAUTHORIZED, e.getMessage());
+        logger.error(e.getMessage());
+        return new ResponseBean(Constant.UNAUTHORIZED, StrConstant.AUTHORIZED_ERROR);
     }
 
     // 捕捉UnauthorizedException
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(UnauthorizedException.class)
     public ResponseBean handle401() {
-        return new ResponseBean(Constant.UNAUTHORIZED, "Unauthorized");
+        //"Unauthorized"
+        return new ResponseBean(Constant.UNAUTHORIZED, StrConstant.AUTHORIZED_ERROR);
     }
 
     // 捕捉输入参数错误异常
@@ -51,6 +58,7 @@ public class ExceptionController {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseBean globalException(HttpServletRequest request, Throwable ex) {
+        logger.error(ex.getMessage());
         return new ResponseBean(getStatus(request).value(), ex.getMessage());
     }
 

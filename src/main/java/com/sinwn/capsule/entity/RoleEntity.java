@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class RoleEntity implements Serializable {
     private Integer id;
 
-    private String rolename;
+    private String roleName;
 
     private String description;
 
@@ -19,12 +19,12 @@ public class RoleEntity implements Serializable {
         this.id = id;
     }
 
-    public String getRolename() {
-        return rolename;
+    public String getRoleName() {
+        return roleName;
     }
 
-    public void setRolename(String rolename) {
-        this.rolename = rolename == null ? null : rolename.trim();
+    public void setRolename(String roleName) {
+        this.roleName = roleName == null ? null : roleName.trim();
     }
 
     public String getDescription() {

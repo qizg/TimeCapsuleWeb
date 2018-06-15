@@ -1,7 +1,10 @@
 package com.sinwn.capsule.config;
 
 import com.sinwn.capsule.constant.StrConstant;
+import com.sinwn.capsule.entity.PermissionEntity;
+import com.sinwn.capsule.entity.RoleEntity;
 import com.sinwn.capsule.entity.UserEntity;
+import com.sinwn.capsule.service.PermissionService;
 import com.sinwn.capsule.service.UserService;
 import com.sinwn.capsule.utils.JWTUtil;
 import org.apache.shiro.authc.AuthenticationException;
@@ -12,17 +15,20 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.util.ByteSource;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class MyShiroRealm extends AuthorizingRealm {
 
     @Resource
     private UserService userInfoService;
+
+    @Resource
+    private PermissionService permissionService;
 
     /**
      * 大坑！，必须重写此方法，不然Shiro会报错
@@ -35,14 +41,31 @@ public class MyShiroRealm extends AuthorizingRealm {
     /* 授权 */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+        SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
         Integer userId = JWTUtil.getUserId(principals.toString());
-        UserEntity user = userInfoService.findByUserId(userId);
+        if (userId == null) {
+            return authorizationInfo;
+        }
+        List<RoleEntity> roleEntities = permissionService.getRolesByUserId(userId);
+        if (roleEntities != null && roleEntities.size() > 0) {
+            List<String> roles = new ArrayList<>();
+            Set<String> permissionSet = new HashSet<>();
+            for (RoleEntity entity : roleEntities) {
+                roles.add(entity.getRoleName());
 
-        SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
-        simpleAuthorizationInfo.addRole("admin");
-        Set<String> permission = new HashSet<>(Arrays.asList("view,edit".split(",")));
-        simpleAuthorizationInfo.addStringPermissions(permission);
-        return simpleAuthorizationInfo;
+                List<PermissionEntity> permissions
+                        = permissionService.getPermissionsByRoleId(entity.getId());
+                if (permissions != null && permissions.size() > 0) {
+                    for (PermissionEntity permission : permissions) {
+                        permissionSet.add(permission.getPermissionName());
+                    }
+                }
+            }
+            authorizationInfo.addRoles(roles);
+            authorizationInfo.addStringPermissions(permissionSet);
+        }
+
+        return authorizationInfo;
     }
 
     /*主要是用来进行身份认证的，也就是说验证用户输入的账号和密码是否正确。*/

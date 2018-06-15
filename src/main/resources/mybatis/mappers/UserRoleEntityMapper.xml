@@ -6,6 +6,13 @@
     <result column="user_id" property="userId" jdbcType="INTEGER" />
     <result column="role_id" property="roleId" jdbcType="INTEGER" />
   </resultMap>
+
+    <resultMap id="RoleResultMap" type="com.sinwn.capsule.entity.RoleEntity" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="role_name" property="roleName" jdbcType="VARCHAR" />
+        <result column="description" property="description" jdbcType="VARCHAR" />
+    </resultMap>
+
   <sql id="Base_Column_List" >
     id, user_id, role_id
   </sql>
@@ -68,4 +75,16 @@
       role_id = #{roleId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectByUserId" resultMap="RoleResultMap" parameterType="Integer">
+      SELECT
+        r.id,
+        r.role_name,
+        r.description
+    FROM
+        t_user_role AS u,
+        t_role AS r
+    WHERE
+        u.role_id = r.id
+        AND u.user_id = #{userId, jdbcType=INTEGER}
+  </select>
 </mapper>

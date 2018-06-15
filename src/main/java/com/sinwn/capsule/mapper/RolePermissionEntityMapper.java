@@ -1,7 +1,12 @@
 package com.sinwn.capsule.mapper;
 
+import com.sinwn.capsule.entity.PermissionEntity;
 import com.sinwn.capsule.entity.RolePermissionEntity;
+import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
+@Repository
 public interface RolePermissionEntityMapper {
     int deleteByPrimaryKey(Integer id);
 
@@ -14,4 +19,6 @@ public interface RolePermissionEntityMapper {
     int updateByPrimaryKeySelective(RolePermissionEntity record);
 
     int updateByPrimaryKey(RolePermissionEntity record);
+
+    List<PermissionEntity> selectByRoleId(int roleId);
 }

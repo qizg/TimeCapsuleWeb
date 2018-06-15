@@ -1,7 +1,10 @@
 package com.sinwn.capsule.mapper;
 
+import com.sinwn.capsule.entity.RoleEntity;
 import com.sinwn.capsule.entity.UserRoleEntity;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface UserRoleEntityMapper {
@@ -16,4 +19,6 @@ public interface UserRoleEntityMapper {
     int updateByPrimaryKeySelective(UserRoleEntity record);
 
     int updateByPrimaryKey(UserRoleEntity record);
+
+    List<RoleEntity> selectByUserId(int userId);
 }
