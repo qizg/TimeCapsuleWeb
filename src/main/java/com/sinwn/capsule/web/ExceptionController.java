@@ -5,8 +5,10 @@ import com.sinwn.capsule.constant.StrConstant;
 import com.sinwn.capsule.domain.ResponseBean;
 import com.sinwn.capsule.exception.UnauthorizedException;
 import org.apache.shiro.ShiroException;
+import org.mybatis.spring.MyBatisSystemException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
@@ -59,6 +61,9 @@ public class ExceptionController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseBean globalException(HttpServletRequest request, Throwable ex) {
         logger.error(ex.getMessage());
+        if (ex instanceof MyBatisSystemException || ex instanceof DataIntegrityViolationException) {
+            return new ResponseBean(getStatus(request).value(), StrConstant.SYSTEM_ERROR);
+        }
         return new ResponseBean(getStatus(request).value(), ex.getMessage());
     }
 
