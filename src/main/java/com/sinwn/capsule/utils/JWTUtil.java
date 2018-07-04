@@ -10,8 +10,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 public class JWTUtil {
-    // 过期时间5分钟
-    private static final long EXPIRE_TIME = 5 * 60_1000;
+    // 过期时间7天
+    private static final long EXPIRE_TIME = 7 * 24 * 60 * 60_1000L;
 
     private static final String USER_ID = "user";
 
