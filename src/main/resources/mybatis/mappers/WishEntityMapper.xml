@@ -20,6 +20,15 @@
     -->
     <result column="content" jdbcType="LONGVARCHAR" property="content" />
   </resultMap>
+
+  <resultMap id="ContentResultMap" type="com.sinwn.capsule.domain.response.WishBean" >
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
+    <result column="avatar" jdbcType="VARCHAR" property="avatar"/>
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+
   <sql id="Base_Column_List">
     <!--
       WARNING - @mbg.generated
@@ -32,4 +41,20 @@
     -->
     content
   </sql>
+
+  <select id="selectWishList" resultMap="ContentResultMap">
+    SELECT
+        w.id,
+        w.content,
+        w.create_time,
+        u.nick_name,
+        u.avatar
+    FROM
+        c_wish w,
+        t_user u
+    WHERE
+        w.`status` = 1
+        AND w.public_status = 1
+        AND w.user_id = u.id
+  </select>
 </mapper>

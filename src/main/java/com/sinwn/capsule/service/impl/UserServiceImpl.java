@@ -13,6 +13,7 @@ import com.sinwn.capsule.mapper.UserEntityMapper;
 import com.sinwn.capsule.service.PermissionService;
 import com.sinwn.capsule.service.UserService;
 import com.sinwn.capsule.utils.JWTUtil;
+import com.sinwn.capsule.utils.NumCheckUtil;
 import com.sinwn.capsule.utils.TransUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,25 +37,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseBean<ResultListData<UserEntity>> getUserList(
             String filterName, String strPageNo, String strPageCount) {
-        int pageNo = 1, pageCount = 10;
 
-        try {
-            if (strPageNo != null) {
-                pageNo = Integer.valueOf(strPageNo);
-                if (pageNo <= 0) {
-                    pageNo = 1;
-                }
-            }
-            if (strPageCount != null) {
-                pageCount = Integer.valueOf(strPageCount);
-                if (pageCount <= 0) {
-                    pageCount = 10;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        PageHelper.startPage(pageNo, pageCount);
+        PageHelper.startPage(NumCheckUtil.pageNo(strPageNo), NumCheckUtil.pageCount(strPageCount));
         Page<UserEntity> page = userMapper.selectUsers(filterName);
 
         ResponseBean<ResultListData<UserEntity>> resultData

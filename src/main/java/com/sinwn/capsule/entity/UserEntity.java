@@ -16,6 +16,8 @@ public class UserEntity implements Serializable {
 
     private String nickName;
 
+    private String avatar;
+
     private Integer state;
 
     private Date createTime;
@@ -68,6 +70,14 @@ public class UserEntity implements Serializable {
 
     public void setNickName(String nickName) {
         this.nickName = nickName == null ? null : nickName.trim();
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar == null ? null : avatar.trim();
     }
 
     public Integer getState() {

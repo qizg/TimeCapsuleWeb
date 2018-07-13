@@ -8,11 +8,12 @@
         <result column="password" jdbcType="VARCHAR" property="password"/>
         <result column="token" jdbcType="VARCHAR" property="token"/>
         <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
+        <result column="avatar" jdbcType="VARCHAR" property="avatar"/>
         <result column="state" jdbcType="INTEGER" property="state"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id, email, phone, password, token, nick_name, state, create_time
+        id, email, phone, password, token, nick_name, avatar, state, create_time
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -26,11 +27,11 @@
     </delete>
     <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="com.sinwn.capsule.entity.UserEntity">
         insert into t_user (id, email, phone,
-                            password, token, nick_name,
+                            password, token, nick_name, avatar,
                             state, create_time)
         values (#{id,jdbcType=INTEGER}, #{email,jdbcType=VARCHAR}, #{phone,jdbcType=INTEGER},
                 #{password,jdbcType=VARCHAR}, #{token,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR},
-                #{state,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
+                #{avatar,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP})
     </insert>
     <insert id="insertSelective" parameterType="com.sinwn.capsule.entity.UserEntity">
         insert into t_user
@@ -52,6 +53,9 @@
             </if>
             <if test="nickName != null">
                 nick_name,
+            </if>
+            <if test="avatar != null">
+                avatar,
             </if>
             <if test="state != null">
                 state,
@@ -79,6 +83,9 @@
             <if test="nickName != null">
                 #{nickName,jdbcType=VARCHAR},
             </if>
+            <if test="avatar != null">
+                #{avatar,jdbcType=VARCHAR},
+            </if>
             <if test="state != null">
                 #{state,jdbcType=INTEGER},
             </if>
@@ -105,6 +112,9 @@
             <if test="nickName != null">
                 nick_name = #{nickName,jdbcType=VARCHAR},
             </if>
+            <if test="avatar != null">
+                avatar = #{avatar,jdbcType=VARCHAR},
+            </if>
             <if test="state != null">
                 state = #{state,jdbcType=INTEGER},
             </if>
@@ -121,6 +131,7 @@
             password    = #{password,jdbcType=VARCHAR},
             token       = #{token,jdbcType=VARCHAR},
             nick_name   = #{nickName,jdbcType=VARCHAR},
+            avatar      = #{avatar,jdbcType=VARCHAR},
             state       = #{state,jdbcType=INTEGER},
             create_time = #{createTime,jdbcType=TIMESTAMP}
         where id = #{id,jdbcType=INTEGER}
