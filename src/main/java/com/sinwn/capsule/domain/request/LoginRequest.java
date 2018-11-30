@@ -1,6 +1,6 @@
 package com.sinwn.capsule.domain.request;
 
-import org.hibernate.validator.constraints.NotBlank;
+import javax.validation.constraints.NotBlank;
 
 public class LoginRequest {
 

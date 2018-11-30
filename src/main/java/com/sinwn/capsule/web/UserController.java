@@ -66,4 +66,14 @@ public class UserController {
     public String userDel() {
         return "userInfoDel";
     }
+
+    @RequestMapping("/user/{userId}")
+    public ResponseBean<UserEntity> getUserDetail(@PathVariable("userId") int userId){
+        UserEntity userEntity = userService.findByUserId(userId);
+
+        if (userEntity == null) {
+            return new ResponseBean<>(Constant.REQUEST_ERROR, StrConstant.NO_DATA);
+        }
+        return new ResponseBean<>(Constant.STATUS_SUCCESS, StrConstant.SUCCESS, userEntity);
+    }
 }

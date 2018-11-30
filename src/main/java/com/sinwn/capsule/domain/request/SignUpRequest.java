@@ -1,8 +1,9 @@
 package com.sinwn.capsule.domain.request;
 
-import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 
 public class SignUpRequest {
     @Length(max = 20, message = "手机号长度错误")

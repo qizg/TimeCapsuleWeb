@@ -1,25 +1,46 @@
 package com.sinwn.capsule.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
+@Table(name = "`t_user`")
 public class UserEntity implements Serializable {
+
+    /**
+     * 主键
+     */
+    @Id
+    @Column(name = "`id`")
     private Integer id;
 
+    /**
+     * 邮箱
+     */
+    @Column(name = "`email`")
     private String email;
 
+    @Column(name = "`phone`")
     private String phone;
 
+    @Column(name = "`password`")
     private String password;
 
+    @Column(name = "`token`")
     private String token;
 
+    @Column(name = "`nick_name`")
     private String nickName;
 
+    @Column(name = "`avatar`")
     private String avatar;
 
+    @Column(name = "`state`")
     private Integer state;
 
+    @Column(name = "`create_time`")
     private Date createTime;
 
     private static final long serialVersionUID = 1L;

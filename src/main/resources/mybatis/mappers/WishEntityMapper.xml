@@ -57,4 +57,21 @@
         AND w.public_status = 1
         AND w.user_id = u.id
   </select>
+
+    <select id="selectByWishId" resultMap="ContentResultMap" parameterType="java.lang.Integer">
+    SELECT
+        w.id,
+        w.content,
+        w.create_time,
+        u.nick_name,
+        u.avatar
+    FROM
+        c_wish w,
+        t_user u
+    WHERE
+        w.`status` = 1
+        AND w.public_status = 1
+        AND w.user_id = u.id
+        AND w.id = #{wishId,jdbcType=INTEGER}
+  </select>
 </mapper>

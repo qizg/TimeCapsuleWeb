@@ -13,9 +13,10 @@ import com.sinwn.capsule.mapper.WishEntityMapper;
 import com.sinwn.capsule.service.WishService;
 import com.sinwn.capsule.utils.NumCheckUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class WishServiceImpl implements WishService {
     }
 
     @Override
-    public ResponseBean addWish(WishAddRequest wish) {
+    public boolean addWish(WishAddRequest wish) {
 
         WishEntity entity = new WishEntity();
         entity.setUserId(wish.getUserId());
@@ -42,10 +43,7 @@ public class WishServiceImpl implements WishService {
         entity.setCreateTime(new Date());
         entity.setStatus(1);
         int count = wishMapper.insert(entity);
-        if (count > 0) {
-            return new ResponseBean(Constant.STATUS_SUCCESS, StrConstant.SUCCESS);
-        }
-        return new ResponseBean(Constant.STATUS_ERROR, StrConstant.SYSTEM_ERROR);
+        return count > 0;
     }
 
     @Override
@@ -62,5 +60,23 @@ public class WishServiceImpl implements WishService {
         resultData.setData(new ResultListData<>(page));
 
         return resultData;
+    }
+
+    @Override
+    @Cacheable(value = "wish", key = "'wishBean'+#wishId", unless = "#result==null")
+    public WishBean getWishById(int wishId) {
+        return wishMapper.selectByWishId(wishId);
+    }
+
+    @Override
+    @CacheEvict(value = "wish", key = "'wishBean'+#wishId")
+    public boolean deleteWishById(int wishId) {
+        WishEntity entity = wishMapper.selectByPrimaryKey(wishId);
+        if (entity != null) {
+            entity.setStatus(2);
+            int count = wishMapper.updateByPrimaryKey(entity);
+            return count > 0;
+        }
+        return false;
     }
 }

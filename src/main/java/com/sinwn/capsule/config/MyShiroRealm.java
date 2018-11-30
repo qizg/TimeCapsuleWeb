@@ -15,6 +15,7 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.springframework.context.annotation.Lazy;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -24,6 +25,9 @@ import java.util.Set;
 
 public class MyShiroRealm extends AuthorizingRealm {
 
+    //在自定义Realm中注入的Service声明中加入@Lazy注解即可解决 @Cacheable 无效问题！！！
+    //解决同时使用Redis缓存数据和缓存shiro时，@Cacheable无效的问题
+    @Lazy
     @Resource
     private UserService userInfoService;
 

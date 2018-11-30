@@ -12,9 +12,9 @@ public interface UserService {
 
     ResponseBean insertUser(SignUpRequest request);
 
-    int updateUser(UserEntity userEntity);
+    UserEntity updateUser(UserEntity userEntity);
 
-    int deleteUser(int id);
+    boolean deleteUser(int id);
 
     LoginResponse loginByUserName(String userName, String password);
 

@@ -16,6 +16,9 @@ import com.sinwn.capsule.utils.JWTUtil;
 import com.sinwn.capsule.utils.NumCheckUtil;
 import com.sinwn.capsule.utils.TransUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -94,13 +97,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int updateUser(UserEntity userEntity) {
-        return userMapper.updateByPrimaryKeySelective(userEntity);
+    @CachePut(value = "users", key = "'userEntity'+#userEntity.id")
+    public UserEntity updateUser(UserEntity userEntity) {
+        int count = userMapper.updateByPrimaryKeySelective(userEntity);
+        if (count > 0) {
+            return userEntity;
+        }
+        return null;
     }
 
     @Override
-    public int deleteUser(int id) {
-        return userMapper.deleteByPrimaryKey(id);
+    @CacheEvict(value = "users", key = "'userEntity'+#userId")
+    public boolean deleteUser(int userId) {
+        UserEntity entity = userMapper.selectByPrimaryKey(userId);
+        if (entity != null) {
+            entity.setState(2);
+            int count = userMapper.updateByPrimaryKey(entity);
+            return count > 0;
+        }
+        return false;
     }
 
     @Override
@@ -129,7 +144,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value = "users", key = "'userEntity'+#userId")
     public UserEntity findByUserId(int userId) {
-        return userMapper.selectByUserId(userId);
+        return userMapper.selectByPrimaryKey(userId);
     }
 }

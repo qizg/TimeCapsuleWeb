@@ -6,8 +6,12 @@ import com.sinwn.capsule.domain.request.WishAddRequest;
 import com.sinwn.capsule.domain.response.WishBean;
 
 public interface WishService {
-    ResponseBean addWish(WishAddRequest wish);
+    boolean addWish(WishAddRequest wish);
 
     ResponseBean<ResultListData<WishBean>> getWishList(
             String filterName, String pageNo, String pageCount);
+
+    WishBean getWishById(int wishId);
+
+    boolean deleteWishById(int wishId);
 }
