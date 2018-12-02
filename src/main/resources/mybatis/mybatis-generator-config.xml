@@ -26,9 +26,9 @@
 
         <!-- 数据库链接URL、用户名、密码 -->
         <jdbcConnection driverClass="org.mariadb.jdbc.Driver"
-                        connectionURL="jdbc:mysql://107.174.170.158:3306/time_capsule_dev"
-                        userId="maria"
-                        password="Qq1122..">
+                        connectionURL="jdbc:mysql://127.0.0.1:3306/time_capsule_dev"
+                        userId="root"
+                        password="123456">
         </jdbcConnection>
 
         <!--

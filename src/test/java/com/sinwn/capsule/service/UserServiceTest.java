@@ -15,22 +15,25 @@ public class UserServiceTest {
 
 
     @Test
-    public void test(){
+    public void test() {
 
         UserEntity entity = userService.findByUserId(4);
-        System.out.println(entity.getId());
+        if (entity != null) {
+            System.out.println(entity.getId());
+        }
     }
 
     @Test
-    public void update(){
+    public void update() {
         UserEntity entity = userService.findByUserId(4);
-        entity.setPhone("12121212666");
-        userService.updateUser(entity);
-
+        if (entity != null) {
+            entity.setPhone("12121212666");
+            userService.updateUser(entity);
+        }
     }
 
     @Test
-    public void delete(){
+    public void delete() {
         userService.deleteUser(4);
 
     }

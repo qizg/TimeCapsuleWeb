@@ -68,6 +68,7 @@ public class UserController {
     }
 
     @RequestMapping("/user/{userId}")
+    @RequiresPermissions("userInfo:detail")
     public ResponseBean<UserEntity> getUserDetail(@PathVariable("userId") int userId){
         UserEntity userEntity = userService.findByUserId(userId);
 
