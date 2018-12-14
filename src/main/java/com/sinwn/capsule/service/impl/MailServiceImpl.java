@@ -1,5 +1,7 @@
 package com.sinwn.capsule.service.impl;
 
+import com.sinwn.capsule.domain.ResultListData;
+import com.sinwn.capsule.domain.response.EmailBean;
 import com.sinwn.capsule.service.MailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +18,9 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Component
 public class MailServiceImpl implements MailService {
@@ -70,12 +75,7 @@ public class MailServiceImpl implements MailService {
         MimeMessage message = mailSender.createMimeMessage();
 
         try {
-            //true表示需要创建一个multipart message
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setFrom(new InternetAddress(from, niceName, "UTF-8"));
-            helper.setTo(to);
-            helper.setSubject(subject);
-            helper.setText(content, true);
+            MimeMessageHelper helper = getMimeMessageHelper(to, subject, content, message);
 
             mailSender.send(message);
             logger.info("html邮件发送成功");
@@ -99,11 +99,7 @@ public class MailServiceImpl implements MailService {
         MimeMessage message = mailSender.createMimeMessage();
 
         try {
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setFrom(new InternetAddress(from, niceName, "UTF-8"));
-            helper.setTo(to);
-            helper.setSubject(subject);
-            helper.setText(content, true);
+            MimeMessageHelper helper = getMimeMessageHelper(to, subject, content, message);
 
             FileSystemResource file = new FileSystemResource(new File(filePath));
             String fileName = filePath.substring(filePath.lastIndexOf(File.separator));
@@ -133,11 +129,7 @@ public class MailServiceImpl implements MailService {
         MimeMessage message = mailSender.createMimeMessage();
 
         try {
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setFrom(new InternetAddress(from, niceName, "UTF-8"));
-            helper.setTo(to);
-            helper.setSubject(subject);
-            helper.setText(content, true);
+            MimeMessageHelper helper = getMimeMessageHelper(to, subject, content, message);
 
             FileSystemResource res = new FileSystemResource(new File(rscPath));
             helper.addInline(rscId, res);
@@ -149,5 +141,36 @@ public class MailServiceImpl implements MailService {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 查询当天需要发送的邮件
+     * @param pageNo
+     * @param pageCount
+     * @return
+     */
+    @Override
+    public ResultListData<EmailBean> loadTodayNeedSendMail(int pageNo, int pageCount) {
+        // Todo 查询数据库，完成真实数据返回。
+
+        List<EmailBean> eMailBeans = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            eMailBeans.add(new EmailBean(i, i + "@xx.cn", "subject" + i,
+                    "content" + i, new Date(System.currentTimeMillis() + i * 10_000L)));
+        }
+
+        return new ResultListData<>(eMailBeans);
+    }
+
+    private MimeMessageHelper getMimeMessageHelper(String to, String subject,
+                                                   String content, MimeMessage message)
+            throws MessagingException, UnsupportedEncodingException {
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        helper.setFrom(new InternetAddress(from, niceName, "UTF-8"));
+        helper.setTo(to);
+        helper.setSubject(subject);
+        //true表示需要创建一个multipart message
+        helper.setText(content, true);
+        return helper;
     }
 }

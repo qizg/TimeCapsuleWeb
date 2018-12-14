@@ -5,14 +5,18 @@ import com.sinwn.capsule.constant.StrConstant;
 import com.sinwn.capsule.domain.ResponseBean;
 import com.sinwn.capsule.domain.ResultListData;
 import com.sinwn.capsule.domain.request.WishAddRequest;
+import com.sinwn.capsule.domain.response.EmailBean;
 import com.sinwn.capsule.domain.response.WishBean;
+import com.sinwn.capsule.service.MailService;
 import com.sinwn.capsule.service.WishService;
+import com.sinwn.capsule.task.RabbitMQTodayEmailSender;
 import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 public class WishController {
@@ -66,4 +70,19 @@ public class WishController {
         return new ResponseBean<>(Constant.STATUS_ERROR, StrConstant.SYSTEM_ERROR);
     }
 
+
+    @Autowired
+    private RabbitMQTodayEmailSender helloSender;
+
+    @Autowired
+    private MailService mailService;
+
+    @GetMapping("/wish/mail")
+    public ResponseBean sendmail() {
+        List<EmailBean> emailBeans = mailService.loadTodayNeedSendMail(1, 100).getList();
+
+        helloSender.sendAllEmail(emailBeans);
+
+        return new ResponseBean(Constant.STATUS_SUCCESS, StrConstant.SUCCESS);
+    }
 }
