@@ -28,10 +28,15 @@ public class RabbitMQConfig {
     // 创建发布邮件延时队列， 面向生产端
     @Bean
     public Queue todayEmailQueue() {
-        Map<String, Object> arguments = new HashMap<>();
-        arguments.put("x-dead-letter-exchange", EXCHANGE_NAME_REAL_EMAIL);
-        arguments.put("x-dead-routing-key", ROUTING_KEY_REAL_EMAIL);
-        return new Queue(QUEUE_NAME_EMAIL, true, false, false, arguments);
+
+        return QueueBuilder
+                .durable(QUEUE_NAME_EMAIL)
+                // 配置到期后转发的交换
+                .withArgument("x-dead-letter-exchange", EXCHANGE_NAME_REAL_EMAIL)
+                // 配置到期后转发的路由键
+                .withArgument("x-dead-letter-routing-key", ROUTING_KEY_REAL_EMAIL)
+                .withArgument("x-dead-routing-key", ROUTING_KEY_REAL_EMAIL)
+                .build();
     }
 
     // 创建一个 topic 类型的交换器， 面向生产端
