@@ -23,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-public class RabbitMQTodayEmailSender implements RabbitTemplate.ReturnCallback {
+public class RabbitMQTodayEmailSender {
 
     private static final Logger log = LoggerFactory.getLogger(RabbitMQTodayEmailSender.class);
 
@@ -64,13 +64,6 @@ public class RabbitMQTodayEmailSender implements RabbitTemplate.ReturnCallback {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void returnedMessage(Message message, int replyCode,
-                                String replyText, String exchange, String routingKey) {
-        log.debug("sender return success" + message.toString()
-                + "===" + replyCode + "===" + exchange + "===" + routingKey);
     }
 
     private String getExpiration(Date sendDate) {

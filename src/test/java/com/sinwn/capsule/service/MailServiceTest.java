@@ -1,10 +1,13 @@
 package com.sinwn.capsule.service;
 
+import com.sinwn.capsule.domain.response.EmailBean;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.Date;
 
 
 @RunWith(SpringRunner.class)
@@ -45,14 +48,14 @@ public class MailServiceTest {
 //        mailService.sendInlineResourceMail("qi@sinwn.com", "主题：这是有图片的邮件", content, imgPath, rscId);
     }
 
-
     @Test
-    public void sendTemplateMail() {
-        //创建邮件正文
-//        Context context = new Context();
-//        context.setVariable("id", "006");
-//        String emailContent = templateEngine.process("emailTemplate", context);
-//
-//        mailService.sendHtmlMail("qi@sinwn.com", "主题：这是模板邮件", emailContent);
+    public void sendEmailWish() {
+        EmailBean bean = new EmailBean(111, "qi@sinwn.com", "Qi在啊", "模板邮件",
+                "我有一个心愿在那里", new Date(), new Date(System.currentTimeMillis() + 10_000L));
+        try {
+//            mailService.sendEmailWish(bean);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

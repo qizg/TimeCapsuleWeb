@@ -12,6 +12,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
@@ -28,6 +30,8 @@ public class MailServiceImpl implements MailService {
 
     private final JavaMailSender mailSender;
 
+    private final TemplateEngine templateEngine;
+
     @Value("${mail.address}")
     private String from;
 
@@ -35,8 +39,9 @@ public class MailServiceImpl implements MailService {
     private String niceName;
 
     @Autowired
-    public MailServiceImpl(JavaMailSender mailSender) {
+    public MailServiceImpl(JavaMailSender mailSender, TemplateEngine templateEngine) {
         this.mailSender = mailSender;
+        this.templateEngine = templateEngine;
     }
 
     /**
@@ -71,19 +76,21 @@ public class MailServiceImpl implements MailService {
      * @param content
      */
     @Override
-    public void sendHtmlMail(String to, String subject, String content) {
+    public boolean sendHtmlMail(String to, String receiverNickname, String subject, String content) {
         MimeMessage message = mailSender.createMimeMessage();
 
         try {
-            MimeMessageHelper helper = getMimeMessageHelper(to, subject, content, message);
+            MimeMessageHelper helper = getMimeMessageHelper(to, receiverNickname, subject, content, message);
 
             mailSender.send(message);
-            logger.info("html邮件发送成功");
+            logger.info("html邮件发送成功:" + to);
+            return true;
         } catch (MessagingException e) {
             logger.error("发送html邮件时发生异常！", e);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
 
@@ -99,7 +106,7 @@ public class MailServiceImpl implements MailService {
         MimeMessage message = mailSender.createMimeMessage();
 
         try {
-            MimeMessageHelper helper = getMimeMessageHelper(to, subject, content, message);
+            MimeMessageHelper helper = getMimeMessageHelper(to, to, subject, content, message);
 
             FileSystemResource file = new FileSystemResource(new File(filePath));
             String fileName = filePath.substring(filePath.lastIndexOf(File.separator));
@@ -129,7 +136,7 @@ public class MailServiceImpl implements MailService {
         MimeMessage message = mailSender.createMimeMessage();
 
         try {
-            MimeMessageHelper helper = getMimeMessageHelper(to, subject, content, message);
+            MimeMessageHelper helper = getMimeMessageHelper(to, to, subject, content, message);
 
             FileSystemResource res = new FileSystemResource(new File(rscPath));
             helper.addInline(rscId, res);
@@ -144,7 +151,29 @@ public class MailServiceImpl implements MailService {
     }
 
     /**
+     * 发送心愿邮件
+     *
+     * @param emailBean
+     */
+    @Override
+    public void sendEmailWish(EmailBean emailBean) {
+        //创建邮件正文
+        Context context = new Context();
+        context.setVariable("email", emailBean);
+        String emailContent = templateEngine.process("email_wish", context);
+
+        boolean sendFlag = sendHtmlMail(emailBean.getReceiver(), emailBean.getReceiverNickname(),
+                emailBean.getSubject(), emailContent);
+
+        // TODO 发送成功更新状态
+        if (sendFlag) {
+
+        }
+    }
+
+    /**
      * 查询当天需要发送的邮件
+     *
      * @param pageNo
      * @param pageCount
      * @return
@@ -155,19 +184,19 @@ public class MailServiceImpl implements MailService {
 
         List<EmailBean> eMailBeans = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
-            eMailBeans.add(new EmailBean(i, i + "@xx.cn", "subject" + i,
-                    "content" + i, new Date(System.currentTimeMillis() + i * 10_000L)));
+            eMailBeans.add(new EmailBean(i, i + "@xx.cn", i + "@xx.cn", "subject" + i,
+                    "content" + i, new Date(), new Date(System.currentTimeMillis() + i * 10_000L)));
         }
 
         return new ResultListData<>(eMailBeans);
     }
 
-    private MimeMessageHelper getMimeMessageHelper(String to, String subject,
+    private MimeMessageHelper getMimeMessageHelper(String to, String receiverNickname, String subject,
                                                    String content, MimeMessage message)
             throws MessagingException, UnsupportedEncodingException {
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setFrom(new InternetAddress(from, niceName, "UTF-8"));
-        helper.setTo(to);
+        helper.setTo(new InternetAddress(to, receiverNickname, "UTF-8"));
         helper.setSubject(subject);
         //true表示需要创建一个multipart message
         helper.setText(content, true);
