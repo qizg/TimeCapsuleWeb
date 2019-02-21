@@ -23,3 +23,11 @@
 /dist/
 /nbdist/
 /.nb-gradle/
+
+
+/timeCapsule.log
+/.idea/
+/.mvn/
+/logs/
+logs/
+timeCapsule.log

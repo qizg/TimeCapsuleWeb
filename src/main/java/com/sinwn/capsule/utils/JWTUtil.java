@@ -72,6 +72,6 @@ public class JWTUtil {
         if (token.length() < HEADER_PREFIX.length()) {
             return null;
         }
-        return token.substring(HEADER_PREFIX.length(), token.length());
+        return token.substring(HEADER_PREFIX.length());
     }
 }
